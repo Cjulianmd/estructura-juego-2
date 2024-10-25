@@ -1,3 +1,4 @@
+
 // Atributos de la clase Juego
 private:
     std::vector<Jugador*> jugadores;
