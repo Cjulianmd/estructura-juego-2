@@ -1,72 +1,63 @@
-// Atributos de la clase Jugador
+// Atributos de la clase Juego
 private:
-    std::string nombre;
-    std::string color;
-    std::map<int, int> progreso; // Progreso en columnas
-    std::map<int, int> progresoTemporal; // Progreso temporal
-    std::set<int> columnasActivas; // Columnas activas
-    int columnasCompletadas; // Columnas completas
+    std::vector<Jugador*> jugadores;
+    std::vector<int> dados;
+    Tablero tablero;
+    int numJugadores;
 
-public:
-    // Constructor
-    Jugador(const std::string& nombre, const std::string& color) 
-        : nombre(nombre), color(color), columnasCompletadas(0) {}
+// Métodos de la clase Juego
 
-    // Método para obtener el nombre del jugador
-    std::string getNombre() const {
-        return nombre;
+// Constructor
+Juego(int numJugadores) : numJugadores(numJugadores) {
+    srand(time(nullptr));
+    std::vector<std::string> colores = {"31", "32", "33", "34"}; // Rojo, Verde, Amarillo, Azul
+    for (int i = 1; i <= numJugadores; ++i) {
+        jugadores.push_back(new Jugador("Jugador " + std::to_string(i), colores[i-1]));
     }
+}
 
-    // Método para obtener el color del jugador
-    std::string getColor() const {
-        return color;
+// Destructor
+~Juego() {
+    for (auto jugador : jugadores) {
+        delete jugador;
     }
+}
 
-    // Método para avanzar en una columna
-    bool avanzarColumna(int columna) {
-        if (columnasActivas.count(columna) > 0) {
-            progreso[columna]++;
-            if (progreso[columna] >= 3) { // Suponiendo que se completan con 3 avances
-                columnasCompletadas++;
-                columnasActivas.erase(columna);
-            }
+// Lanza los dados para el turno actual
+void lanzarDados() {
+    Dado dado;
+    dados = dado.lanzarDados();
+    std::cout << "Resultados de los dados: ";
+    for (int d : dados) {
+        std::cout << d << " ";
+    }
+    std::cout << std::endl;
+}
+
+// Verifica si algún jugador ha ganado el juego
+bool comprobarVictoria() const {
+    return std::any_of(jugadores.begin(), jugadores.end(),
+                       [](const Jugador* j) { return j->getColumnasCompletadas() >= 3; });
+}
+
+// Devuelve los movimientos posibles basados en los dados lanzados
+std::vector<std::pair<int, int>> obtenerMovimientosPosibles() const {
+    std::vector<std::pair<int, int>> movimientos;
+    movimientos.push_back(std::make_pair(dados[0] + dados[1], dados[2] + dados[3]));
+    movimientos.push_back(std::make_pair(dados[0] + dados[2], dados[1] + dados[3]));
+    movimientos.push_back(std::make_pair(dados[0] + dados[3], dados[1] + dados[2]));
+    return movimientos;
+}
+
+// Verifica si el jugador puede avanzar en alguna columna
+bool puedeAvanzar(const Jugador* jugador, const std::vector<std::pair<int, int>>& movimientos) const {
+    const auto& columnasActivas = jugador->getColumnasActivas();
+    for (const auto& movimiento : movimientos) {
+        int col1 = movimiento.first;
+        int col2 = movimiento.second;
+        if (columnasActivas.count(col1) > 0 || columnasActivas.count(col2) > 0) {
             return true;
         }
-        return false;
     }
-
-    // Método para finalizar el turno
-    void finalizarTurno(bool continuar) {
-        // Si el jugador no puede avanzar más, restablece el progreso temporal
-        if (!continuar) {
-            for (auto& col : progresoTemporal) {
-                progreso[col.first] = std::max(0, progreso[col.first] - col.second);
-            }
-            progresoTemporal.clear();
-        }
-    }
-
-    // Método para agregar progreso temporal a una columna
-    void agregarProgresoTemporal(int columna, int cantidad) {
-        progresoTemporal[columna] += cantidad;
-    }
-
-    // Método para obtener el progreso de una columna
-    int getProgreso(int columna) const {
-        return progreso.at(columna);
-    }
-
-    // Método para obtener el progreso temporal de una columna
-    int getProgresoTemporal(int columna) const {
-        return progresoTemporal.at(columna);
-    }
-
-    // Método para obtener las columnas activas
-    const std::set<int>& getColumnasActivas() const {
-        return columnasActivas;
-    }
-
-    // Método para obtener las columnas completadas
-    int getColumnasCompletadas() const {
-        return columnasCompletadas;
-    }
+    return false;
+}
