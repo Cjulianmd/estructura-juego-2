@@ -50,4 +50,6 @@ Este proyecto implementa un juego de dados en el que varios jugadores compiten p
      - `distribucion`: distribución uniforme entre 1 y 6.
    - **Métodos**:
      - `lanzar()`: Lanza el dado y devuelve el resultado.
+   **Diagrama de clases**
+![image](https://github.com/user-attachments/assets/296125be-866c-4781-96cf-dc221868754e)
 
