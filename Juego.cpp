@@ -41,7 +41,7 @@ bool comprobarVictoria() const {
                        [](const Jugador* j) { return j->getColumnasCompletadas() >= 3; });
 }
 
-// Devuelve los movimientos posibles basados en los dados lanzados
+// Devuelve los movimientos posibles basados en los dados lanzados s
 std::vector<std::pair<int, int>> obtenerMovimientosPosibles() const {
     std::vector<std::pair<int, int>> movimientos;
     movimientos.push_back(std::make_pair(dados[0] + dados[1], dados[2] + dados[3]));
