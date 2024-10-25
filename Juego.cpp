@@ -10,7 +10,7 @@ private:
 // Constructor
 Juego(int numJugadores) : numJugadores(numJugadores) {
     srand(time(nullptr));
-    std::vector<std::string> colores = {"31", "32", "33", "34"}; // Rojo, Verde, Amarillo, Azul
+    std::vector<std::string> colores = {"31", "32", "33", "34"}; // Rojo, Verde, Amarillo, Azul.
     for (int i = 1; i <= numJugadores; ++i) {
         jugadores.push_back(new Jugador("Jugador " + std::to_string(i), colores[i-1]));
     }
