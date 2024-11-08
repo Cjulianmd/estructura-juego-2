@@ -1,5 +1,3 @@
-//Juego.cpp
-
 #include "Juego.h"
 #include <cstdlib>
 #include <ctime>
